@@ -71,18 +71,6 @@ function hookMessage() {
 		contain=$log
 
 		if $contain; then
-		echo "henhao "
-		else 
-		echo "bu henhao"
-		fi
-
-		exit 1
-
-
-
-
-		# if [[ $MSG_AHEAD == "change" ]]; then
-		if [[ contain -eq "YES" ]]; then
 
 			#statements
 			echo
