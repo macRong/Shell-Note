@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+#Author:macRong
+#Create Date:2017.11.19
 # An example hook script to prepare the commit log message.
 # Called by "git commit" with the name of the file that has the
 # commit message, followed by the description of the commit
