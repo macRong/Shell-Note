@@ -57,4 +57,8 @@ function rename() {
 rename
 
 
-# example:
+# 问题：  
+#for f in `ls $TARGET_PATH`; do
+# 比如： cao的副本 2.png    rename_files
+# cao的副本 2.png 这其实是一个文件，名字只是有空格
+# 如果有空格 读$f 就是错的 （文件分开了）
