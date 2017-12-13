@@ -21,9 +21,8 @@ CUREENPATH=`pwd`
 echo "【2】请输出重命名的文件名字(如 zhang)后面会自增123..:"
 read rename_name
 
-
-# arr=()
 index=0
+
 function rename() {
 	# echo $FILES
 	if [[ ! -e "$TARGET_PATH/rename_files" ]]; then
@@ -31,11 +30,26 @@ function rename() {
 	fi
 
 	for f in `ls $TARGET_PATH`; do
-		index=$[$index+1]
+		echo "yyyyyyy $f"
 		# echo "nnnnnn $TARGET_PATH/$f"
 	    cleanup_name="$(echo $f | sed 's/ /_-_/g')"
-		echo "lll   $cleanup_name"
-		mv "$TARGET_PATH/$cleanup_name" $TARGET_PATH/rename_files/"$rename_name"$index".jpg"
+		echo "lll  $cleanup_name"
+		fileType=`echo ${cleanup_name##*.}`
+
+		if [[ $cleanup_name == *.* ]]; then
+			fileType=".$fileType"
+		else
+			fileType=''
+		fi
+
+		target_file=$TARGET_PATH/rename_files/"$rename_name""$fileType"
+		
+		if [[ -e $target_file ]]; then
+			index=$[$index+1]
+			target_file=$TARGET_PATH/rename_files/"$rename_name"$index"$fileType"
+		fi
+
+		mv "$TARGET_PATH/$cleanup_name" "$target_file"
 	done
 
 }
@@ -44,4 +58,3 @@ rename
 
 
 # example:
-# sh /Users/rongshouzhen/Downloads/rename.sh /Users/rongshouzhen/Downloads/wang 

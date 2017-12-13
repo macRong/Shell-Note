@@ -1,0 +1,17 @@
+#!/bin/bash
+
+sum=0
+num=0
+while(($num<=100))
+do
+
+	if test $(($num%2==0))
+	then	 
+		sum=$(($num+$sum))
+	else
+		continue
+	fi
+let "num++"
+done
+
+echo $sum
