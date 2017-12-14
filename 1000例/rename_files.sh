@@ -29,14 +29,15 @@ function rename() {
 		mkdir "$TARGET_PATH/rename_files"
 	fi
 
-	for f in `ls $TARGET_PATH`; do
+	for f in `ls $TARGET_PATH|tr " " "?"`; do
+		
+		# 空格问题 用？代替空格，然后在换过来
+		f=${f//'?'/' '}
 		echo "yyyyyyy $f"
-		# echo "nnnnnn $TARGET_PATH/$f"
-	    cleanup_name="$(echo $f | sed 's/ /_-_/g')"
-		echo "lll  $cleanup_name"
-		fileType=`echo ${cleanup_name##*.}`
+		echo "lll  $f"
+		fileType=`echo ${f##*.}`
 
-		if [[ $cleanup_name == *.* ]]; then
+		if [[ $f == *.* ]]; then
 			fileType=".$fileType"
 		else
 			fileType=''
@@ -49,16 +50,10 @@ function rename() {
 			target_file=$TARGET_PATH/rename_files/"$rename_name"$index"$fileType"
 		fi
 
-		mv "$TARGET_PATH/$cleanup_name" "$target_file"
+		mv "$TARGET_PATH/$f" "$target_file"
 	done
 
 }
 
 rename
 
-
-# 问题：  
-#for f in `ls $TARGET_PATH`; do
-# 比如： cao的副本 2.png    rename_files
-# cao的副本 2.png 这其实是一个文件，名字只是有空格
-# 如果有空格 读$f 就是错的 （文件分开了）
