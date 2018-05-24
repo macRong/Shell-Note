@@ -1,0 +1,11 @@
+
+
+chenlu  Team ID:
+   22DW794HFD
+
+
+
+1. 用于移动应用在iOS9.3.1及以后版本中，未压缩的大小apple-app-site-association文件不得大于128KB
+
+
+dispatch_block_t block = ^{}];
