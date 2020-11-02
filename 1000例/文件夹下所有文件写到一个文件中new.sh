@@ -52,9 +52,14 @@ Hi_Dir () {
         done
     
     else
-        echo "Hi `basename $FILE` =========== `dirname $FILE`"
-        cat $FILE >> $WRITEFILE_PATH
-        Total_dir=$[Total_dir +1]
+        #⚠️这里是什么后缀????
+        if [ "${FILE##*.}"x = "java"x ]||[ "${FILE##*.}"x = "xml"x ];then
+            echo "Hi `basename $FILE` =========== `dirname $FILE`"
+            cat $FILE >> $WRITEFILE_PATH
+            Total_dir=$[Total_dir +1]
+
+        fi
+
     fi
     
 }
