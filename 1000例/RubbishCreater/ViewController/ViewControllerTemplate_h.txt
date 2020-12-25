@@ -1,0 +1,181 @@
+
+
+@implementation GCZXFillPackedOrderMainVC
+
+#pragma mark -  —————————————————— LifeCycle ——————————————————
+
++(instancetype)startHomefetchViewControllerEndHome:(NSDictionary *)params{
+    if(![GCZXFillPackedUserModel shareInstance].isLogin){
+        [GCZXFillPackedMethod dispatch_login];
+        return nil;
+    }
+    GCZXFillPackedOrderMainVC * orderVc = [[GCZXFillPackedOrderMainVC alloc] init];
+    orderVc.selectItemAtIndexPath = [NSIndexPath indexPathForRow:GCZXFillPacked_str_protect(params[@"status"]).integerValue inSection:GCZXFillPacked_str_protect(params[@"orderType"]).integerValue];
+    
+    return orderVc;
+}
+
+- (void)startHomedeliverRouterParamsEndHome:(NSDictionary*)params
+{
+    self.selectItemAtIndexPath = [NSIndexPath indexPathForRow:GCZXFillPacked_str_protect(params[@"status"]).integerValue inSection:GCZXFillPacked_str_protect(params[@"orderType"]).integerValue];
+}
+
+
+- (void)dealloc
+{
+    
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self initMainViews];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+     [self.navigationController setNavigationBarHidden:NO animated:animated];
+    
+}
+
+#pragma mark -  ————————————————— init and config ——————————————
+
+/** 创建相关子view */
+- (void)initMainViews
+{
+    [GCZXHomeStandardManager EndHome_endForcuWithClass];
+    // 标题
+    [self.view addSubview:self.categoryView];
+    
+    // 指示器
+    JXCategoryIndicatorLineView *lineView = [[JXCategoryIndicatorLineView alloc] init];
+    lineView.indicatorColor = h_HexColor(0xf87e28);
+    lineView.indicatorWidth = 24;
+    lineView.layer.cornerRadius = 1;
+    self.categoryView.indicators = @[lineView];
+    self.categoryView.titles = self.titleArr;
+    
+    // 内容
+    [self.view addSubview:self.listContainerView];
+    
+    //关联到categoryView
+    self.categoryView.listContainer = self.listContainerView;
+    
+}
+
+#pragma mark - ————————————————— Delegate Event ———————————————
+
+- (void)categoryView:(JXCategoryBaseView *)categoryView didSelectedItemAtIndex:(NSInteger)index {
+    self.index = index;
+    [GCZXHomeStandardManager EndHome_endForcuWithClass];
+}
+
+//返回列表的数量
+- (NSInteger)numberOfListsInlistContainerView:(JXCategoryListContainerView *)listContainerView
+{
+    return self.titleArr.count;
+}
+
+//根据下标index返回对应遵从`JXCategoryListContentViewDelegate`协议的列表实例
+- (id<JXCategoryListContentViewDelegate>)listContainerView:(JXCategoryListContainerView *)listContainerView initListForIndex:(NSInteger)index
+{
+    return self.containerViewArr[index];
+}
+
+#pragma mark - ————————————————— Setter/Getter ————————————————
+
+- (void)setSelectItemAtIndexPath:(NSIndexPath *)selectItemAtIndexPath
+{
+    
+    _selectItemAtIndexPath = selectItemAtIndexPath;
+    //添加越界过滤
+    NSInteger section = selectItemAtIndexPath.section;
+    if (section >= self.containerViewArr.count) {
+        section = 0;
+    }
+    NSInteger row = selectItemAtIndexPath.row;
+    if (row >= 3) {
+        row = 0;
+    }
+    NSIndexPath *path = [NSIndexPath indexPathForRow:row inSection:section];
+    _selectItemAtIndexPath = path;
+    
+    [self.categoryView selectItemAtIndex:path.section];
+    switch (path.section) {
+        case 0:{
+            //已接订单
+            self.receivedVc.selectItemAtIndex = path.row;
+            break;
+        }case 1:{
+             //已发订单
+             self.postedVC.selectItemAtIndex = path.row;
+            break;
+        }
+        default:
+            break;
+    }
+    
+}
+
+- (NSArray *)titleArr
+{
+    if (!_titleArr) {
+        _titleArr = @[@"已接订单", @"已发订单"];
+    }
+    return _titleArr;
+}
+
+- (JXCategoryTitleView *)categoryView
+{
+    if (!_categoryView) {
+        _categoryView = [[JXCategoryTitleView alloc] initWithFrame:CGRectMake(0,h_StatusBarHeight, SCREEN_WIDTH, 44)];
+        _categoryView.titleColor = h_HexColor(0x333333);
+        _categoryView.titleSelectedColor = h_HexColor(0xf87e28);
+        _categoryView.titleFont = [UIFont systemFontOfSize:17];
+        _categoryView.titleSelectedFont = [UIFont systemFontOfSize:17];
+        _categoryView.backgroundColor = [UIColor whiteColor];
+        _categoryView.delegate = self;
+        _categoryView.defaultSelectedIndex = self.selectItemAtIndexPath.section;
+    }
+    return _categoryView;
+}
+
+- (JXCategoryListContainerView *)listContainerView
+{
+    if (!_listContainerView) {
+        _listContainerView = [[JXCategoryListContainerView alloc] initWithType:JXCategoryListContainerType_ScrollView delegate:self];
+        _listContainerView.frame = CGRectMake(0, CGRectGetMaxY(self.categoryView.frame), SCREEN_WIDTH, SCREEN_HEIGHT-h_NavBarAndStatusBarHeight-h_TabBarHeight);
+    }
+    return _listContainerView;
+}
+
+- (NSArray *)containerViewArr
+{
+    if (!_containerViewArr) {
+        _containerViewArr = @[self.receivedVc, self.postedVC];
+    }
+    return _containerViewArr;
+}
+
+- (GCZXFillPackedOrderReceivedVC *)receivedVc
+{
+    if (!_receivedVc) {
+        _receivedVc = [[GCZXFillPackedOrderReceivedVC alloc] init];
+    }
+    return _receivedVc;
+}
+- (GCZXFillPackedOrderPostedVC *)postedVC
+{
+    if (!_postedVC) {
+        _postedVC = [[GCZXFillPackedOrderPostedVC alloc] init];
+    }
+    return _postedVC;
+}
+
+@end
